@@ -1,0 +1,22 @@
+import Image from "next/image";
+import NavBar from "./navbar";
+import DropDown from "./dropDown";
+
+export default function Header() {
+    return (
+        <header className="bg-white/80 backdrop-blur-sm border-b border-purple-100 sticky top-0 z-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div className="w-full flex items-center justify-between gap-4">
+                    <div className="sm:mb-2.5 "><Image src={"/logo/logo.png"} alt="logo" width={150} height={150} priority />
+                    </div>
+                    <div className="hidden w-full sm:w-[80%] sm:flex flex-col-reverse sm:flex-row items-center justify-between gap-6">
+                        <NavBar />
+                    </div>
+                    <DropDown />
+
+
+                </div>
+            </div>
+        </header>
+    )
+}

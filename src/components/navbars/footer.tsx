@@ -1,0 +1,41 @@
+
+export default function Footer() {
+
+    return (
+        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12">
+            <div className="bg-white rounded-2xl p-8 border border-purple-100">
+                <div className="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                            💡 Pro Tips
+                        </h3>
+                        <ul className="space-y-2 text-sm text-gray-600">
+                            <li className="flex items-start gap-2">
+                                <span className="text-violet-500 mt-1">•</span>
+                                <span>Start with 80% quality for optimal balance</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-violet-500 mt-1">•</span>
+                                <span>Enable aspect ratio lock to prevent distortion</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                                <span className="text-violet-500 mt-1">•</span>
+                                <span>For web use, 1920px width is usually sufficient</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                            🔒 Privacy First
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                            All image processing happens directly in your browser. Your images
+                            are never uploaded to any server, ensuring complete privacy and
+                            security. Everything stays on your device.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    )
+}
