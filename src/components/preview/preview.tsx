@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Preview() {
     const state = useAppSelector(state => state.image);
-    const aspectRatio = (state.width && state.height) ? (state.width / state.height) : null;
+    // const aspectRatio = (state.width && state.height) ? (state.width / state.height) : null;
 
     return (
         <div className="lg:col-span-2 sm:order-2">
