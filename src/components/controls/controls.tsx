@@ -1,10 +1,67 @@
+"use client"
+
+import { useAppSelector } from "@/redux/hooks";
+import { useEffect, useState } from "react";
+
+
 export default function Controls() {
+    const state = useAppSelector(state => state.image);
+    const [height, setHeight] = useState<number | "">("");
+    const [width, setWidth] = useState<number | "">("");
+    const [maitainAspectRatio, setMaitainAspectRatio] = useState(true)
+
+    const aspectRatio = (state.width && state.height) ? (state.width / state.height) : null;
+
+    const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === "") {
+            setWidth("");
+            setHeight("");
+
+            return
+        }
+
+        const width = Number(value)
+        const height = aspectRatio ? Math.round(width / aspectRatio) : "";
+
+        setWidth(width);
+        if (maitainAspectRatio) setHeight(height)
+    }
+
+    const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        if (value === "") {
+            setHeight("");
+            setWidth("");
+
+            return
+        }
+
+        const height = Number(value);
+        const width = aspectRatio ? Math.round(height * aspectRatio) : "";
+
+        setHeight(height)
+        if (maitainAspectRatio) setWidth(width);
+    }
+
+    const handleMaintainAspectRatio = () => {
+        setMaitainAspectRatio(!maitainAspectRatio);
+        setHeight("")
+        setWidth("")
+    }
+
+    useEffect(() => {
+        if (!state.url) {
+            setHeight("");
+            setWidth("")
+        }
+    }, [state])
 
     return (
         <div className="lg:col-span-1 space-y-6">
-            <div className="bg-white rounded-2xl p-6 border border-purple-100">
+            <div className=" rounded-2xl bg-white p-6 border border-purple-100">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-semibold text-gray-800">Settings</h2>
+                    <h2 className="text-lg font-semibold text-neutral-500">Settings</h2>
                     <button className="text-gray-400 hover:text-gray-600 transition-colors">
                         <svg
                             className="w-5 h-5"
@@ -21,7 +78,46 @@ export default function Controls() {
                         </svg>
                     </button>
                 </div>
-                {/* Quality Slider */}
+
+                <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                        Dimensions
+                    </label>
+                    <div className="space-y-3">
+                        <div>
+                            <input
+                                type="number"
+                                placeholder="Width"
+                                value={width}
+                                onChange={handleWidthChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+                            />
+                        </div>
+                        <div>
+                            <input
+                                type="number"
+                                placeholder="Height"
+                                value={height}
+                                onChange={handleHeightChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+                            />
+                        </div>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                defaultChecked={maitainAspectRatio}
+                                onChange={() => handleMaintainAspectRatio()}
+                                className="w-4 h-4 text-violet-500 border-gray-300 rounded focus:ring-violet-500"
+                            />
+                            <span className="text-sm text-gray-700">
+                                Maintain aspect ratio
+                            </span>
+                        </label>
+                    </div>
+
+                </div>
+
+
                 <div className="mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-3">
                         Quality: <span className="text-violet-600">80%</span>
@@ -36,40 +132,6 @@ export default function Controls() {
                     <div className="flex justify-between text-xs text-gray-500 mt-1">
                         <span>Smaller</span>
                         <span>Better Quality</span>
-                    </div>
-                </div>
-                {/* Dimensions */}
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">
-                        Dimensions
-                    </label>
-                    <div className="space-y-3">
-                        <div>
-                            <input
-                                type="number"
-                                placeholder="Width"
-                                defaultValue={1920}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
-                            />
-                        </div>
-                        <div>
-                            <input
-                                type="number"
-                                placeholder="Height"
-                                defaultValue={1080}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
-                            />
-                        </div>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                type="checkbox"
-                                defaultChecked={false}
-                                className="w-4 h-4 text-violet-500 border-gray-300 rounded focus:ring-violet-500"
-                            />
-                            <span className="text-sm text-gray-700">
-                                Maintain aspect ratio
-                            </span>
-                        </label>
                     </div>
                     <button className="w-full mt-3 bg-violet-500 hover:bg-violet-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
                         <svg
@@ -99,6 +161,7 @@ export default function Controls() {
                     </div>
                 </div>
             </div>
+
             {/* Download Button */}
             <button className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-200">
                 <svg

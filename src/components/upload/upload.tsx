@@ -2,13 +2,15 @@
 
 import { useState, useRef, useEffect } from "react";
 import { setImage } from "@/redux/slices/image-slice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 
 export default function Upload() {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [image, setimage] = useState("");
     const dispatch = useAppDispatch();
+    const state = useAppSelector(state => state.image);
+
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -46,6 +48,8 @@ export default function Upload() {
         }
     }, [image]);
 
+
+    if (state.url) return null;
 
     return (
         <div className="max-w-2xl mx-auto mb-8">

@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Roboto } from "next/font/google"
 import "./globals.css";
 import Header from "@/components/navbars/header/header";
 import Footer from "@/components/navbars/footer";
 import { ReduxProvider } from "@/redux/provider";
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -35,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` ${roboto.variable} antialiased`}
+        className={` ${geistMono.variable} ${roboto.variable} ${geistSans.variable} antialiased`}
       >
         <ReduxProvider>
           <Header />
