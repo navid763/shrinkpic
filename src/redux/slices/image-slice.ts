@@ -3,12 +3,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface imageState {
     url: string;
     width: number | null;
-    height: number | null
+    height: number | null;
+    size: number | null
 }
 const initstate: imageState = {
     url: "",
     width: null,
-    height: null
+    height: null,
+    size: null
 }
 
 export const imageSlice = createSlice({
@@ -17,15 +19,17 @@ export const imageSlice = createSlice({
 
     reducers: {
         setImage: (state, action: PayloadAction<imageState>) => {
-            const { url, width, height } = action.payload;
+            const { url, width, height, size } = action.payload;
             state.url = url
             state.height = height
             state.width = width
+            state.size = size
         },
         emptyImage: (state) => {
             state.url = "";
             state.width = null;
             state.height = null;
+            state.size = null
         }
     }
 })

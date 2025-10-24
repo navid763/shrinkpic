@@ -20,7 +20,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-start gap-2">
                                 <span className="text-violet-500 mt-1">•</span>
-                                <span>For web use, 1920px width is usually sufficient</span>
+                                <span>For web use, 1920 px width is usually sufficient</span>
                             </li>
                         </ul>
                     </div>

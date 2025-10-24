@@ -15,14 +15,13 @@ export default function Upload() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return
-
         const imageUrl = URL.createObjectURL(file);
         setimage(imageUrl);
 
         const img = document.createElement("img");
         img.src = imageUrl;
         img.onload = () => {
-            dispatch(setImage({ url: imageUrl, width: img.naturalWidth, height: img.naturalHeight }))
+            dispatch(setImage({ url: imageUrl, width: img.naturalWidth, height: img.naturalHeight, size: Math.round((file.size / 1024)) }))
         }
     };
 
