@@ -13,11 +13,11 @@ interface DimensionsControlProps {
 }
 
 export default function DimensionsControl({ heightSetter, widthSetter, height, width }: DimensionsControlProps) {
-    const state = useAppSelector(state => state.image);
+    const state = useAppSelector(state => state.images);
 
     const [maitainAspectRatio, setMaitainAspectRatio] = useState(true)
 
-    const aspectRatio = (state.width && state.height) ? (state.width / state.height) : null;
+    const aspectRatio = (state.length && state[0].width && state[0].height) ? (state[0].width / state[0].height) : null;
 
     const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -58,7 +58,7 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
     }
 
     useEffect(() => {
-        if (!state.url) {
+        if (state.length === 0) {
             heightSetter("");
             widthSetter("")
         }

@@ -2,36 +2,25 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface imageState {
     url: string;
+    name: string;
     width: number | null;
     height: number | null;
-    size: number | null
+    size: number | null;
 }
-const initstate: imageState = {
-    url: "",
-    width: null,
-    height: null,
-    size: null
-}
+const initstate: imageState[] = [];
 
 export const imageSlice = createSlice({
-    name: "image",
+    name: "images",
     initialState: initstate,
 
     reducers: {
-        setImage: (state, action: PayloadAction<imageState>) => {
-            const { url, width, height, size } = action.payload;
-            state.url = url
-            state.height = height
-            state.width = width
-            state.size = size
+        setImages: (state, action: PayloadAction<imageState[]>) => {
+            // const { url, width, height, size } = action.payload;
+            // state.push(...action.payload)
+            return (action.payload)
         },
-        emptyImage: (state) => {
-            state.url = "";
-            state.width = null;
-            state.height = null;
-            state.size = null
-        }
+        emptyImages: () => []
     }
 })
 
-export const { setImage, emptyImage } = imageSlice.actions
+export const { setImages, emptyImages } = imageSlice.actions

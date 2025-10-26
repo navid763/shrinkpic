@@ -10,7 +10,7 @@ import Downloadicon from "../icons/download";
 import FileInfo from "./file-info";
 
 export default function Controls() {
-    const fileSize = useAppSelector(state => state.image.size ?? null);
+    const fileSize = useAppSelector(state => state.images[0]?.size ?? null);
 
     const [height, setHeight] = useState<number | "">("");
     const [width, setWidth] = useState<number | "">("");

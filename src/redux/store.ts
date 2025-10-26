@@ -3,7 +3,7 @@ import { imageSlice } from "./slices/image-slice";
 
 export const store = configureStore({
     reducer: {
-        image: imageSlice.reducer
+        images: imageSlice.reducer
     }
 });
 

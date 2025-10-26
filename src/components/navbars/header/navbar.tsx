@@ -3,7 +3,7 @@ export default function NavBar() {
 
     return (
         <>
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-3">
+            <div className="flex flex-col text-white sm:text-neutral-800 sm:flex-row justify-center items-center gap-3">
                 <span>testOption1</span>
                 <span>test-option2</span>
                 <span>test Option3</span>
