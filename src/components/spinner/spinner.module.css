@@ -1,0 +1,49 @@
+.mymyloader,
+.myloader:before,
+.myloader:after {
+  border-radius: 50%;
+  width: 2.5em;
+  height: 2.5em;
+  animation-fill-mode: both;
+  animation: bblFadInOut 1.8s infinite ease-in-out;
+}
+
+.myloader {
+  color: #FFF;
+  font-size: 7px;
+  position: relative;
+  text-indent: -9999em;
+  transform: translateZ(0);
+  animation-delay: -0.16s;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.myloader:before,
+.myloader:after {
+  content: '';
+  position: absolute;
+  top: 0;
+}
+
+.myloader:before {
+  left: -2em;
+  animation-delay: -0.32s;
+}
+
+.myloader:after {
+  left: 2em;
+}
+
+@keyframes bblFadInOut {
+
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 2.5em 0 -1.3em
+  }
+
+  40% {
+    box-shadow: 0 2.5em 0 0
+  }
+}

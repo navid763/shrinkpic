@@ -18,7 +18,7 @@ export default function QualitySlider({ quality, qualitySetter }: QualitySliderP
             </label>
             <input
                 type="range"
-                min={1}
+                min={10}
                 max={100}
                 value={quality}
                 onChange={(handleQuality)}

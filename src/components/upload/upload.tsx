@@ -121,7 +121,7 @@ export default function Upload() {
                     </div>
                     <div>
                         <p className="text-xl font-semibold text-gray-700 mb-2">
-                            {/* {selectedFile ? selectedFile.name : "Drop your image here"} */}
+                            Drop your image here
                         </p>
                         <p className="text-gray-500">or click to browse</p>
                     </div>
