@@ -7,11 +7,14 @@ import { useState, useCallback, useEffect } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import Downloadicon from "../icons/download";
 import FileInfo from "./file-info";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { ImageProcessingService, ProcessedImageResult } from "@/services/browser-image-compression/image-processing.service";
 import Spinner from "../spinner/spinner";
+import Checkmark from "../other/checknark";
 
 export default function Controls() {
+    const CHECKMARK_DURATION = 1200 //ms
+    const MIN_DIMENSION = 50;
 
     const images = useAppSelector(state => state.images);
 
@@ -20,6 +23,8 @@ export default function Controls() {
     const [quality, setQuality] = useState(80);
     const [compressionResult, setCompressionResult] = useState<ProcessedImageResult | null>(null)
     const [loading, setLoading] = useState(false);
+    const [showCheckMark, setShowCheckMark] = useState(false);
+    const [initialSettings, setInitialSettings] = useState<{ width: number | "", height: number | "", quality: number } | null>(null)
 
     const handleHeight = useCallback((height: number | "") => {
         setHeight(height);
@@ -33,32 +38,53 @@ export default function Controls() {
         setQuality(quality);
     }, []);
 
+    const hasChanged = () => {
+        if (!initialSettings) return true;
+        return initialSettings.width !== width ||
+            initialSettings.height !== height ||
+            initialSettings.quality !== quality;
+    };
 
     const anyControlIsNotSet = (!quality || !width || !height);
 
     async function applyChanges() {
         if (images.length !== 0) {
             if (anyControlIsNotSet) {
-                toast.warn("please set dimensions or quality for selected image");
+                // toast.warn("please set dimensions or quality for selected image");
                 return
             }
 
-
+            if (!hasChanged()) {
+                toast.info("No changes detected");
+                return
+            }
 
             if (images.length === 1) {
-                setLoading(true);
-                const image = images[0];
-                const result = await ImageProcessingService.processImage({
-                    url: image.url,
-                    quality: quality,
-                    targetHeight: height,
-                    targetWidth: width,
-                    name: image.name
+                try {
+                    setLoading(true);
 
-                });
+                    const image = images[0];
 
-                setCompressionResult(result)
-                setLoading(false)
+                    const result = await ImageProcessingService.processImage({
+                        url: image.url,
+                        quality: quality,
+                        targetHeight: height,
+                        targetWidth: width,
+                        name: image.name
+
+                    });
+
+                    setCompressionResult(result);
+                    setInitialSettings({ width: width as number, height: height as number, quality });
+
+                } catch (error) {
+                    toast.error("Error during proccessing the image. please try again");
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                    setShowCheckMark(true);
+                }
+
             }
         }
 
@@ -75,13 +101,23 @@ export default function Controls() {
 
     useEffect(() => {
         if (images.length === 0) {
-            setCompressionResult(null)
+            setCompressionResult(null);
+            setShowCheckMark(false);
+            setInitialSettings(null);
         }
-    }, [images])
+    }, [images]);
+
+    useEffect(() => {
+        if (showCheckMark) {
+            const timer = setTimeout(() => setShowCheckMark(false), CHECKMARK_DURATION + 1);
+            return () => clearTimeout(timer);
+        }
+    }, [showCheckMark]);
+
 
     return (
         <div className="lg:col-span-1 space-y-6">
-            <div className="rounded-2xl bg-white p-6 border border-purple-100">
+            <div className="rounded-2xl bg-white p-6 border border-purple-100 relative">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-lg font-semibold text-neutral-500">Settings</h2>
                 </div>
@@ -91,6 +127,7 @@ export default function Controls() {
                     widthSetter={handleWidth}
                     height={height}
                     width={width}
+                    minDimension={MIN_DIMENSION}
                 />
 
                 <QualitySlider qualitySetter={handleQuality} quality={quality} />
@@ -107,6 +144,7 @@ export default function Controls() {
 
                 {compressionResult &&
                     <FileInfo originalSize={compressionResult.originalSizeKB} compressedSize={compressionResult.compressedSizeKB} savedPercentage={compressionResult.savedPercentage} />}
+                <Checkmark show={showCheckMark} duration={CHECKMARK_DURATION} />
             </div>
 
             <button
@@ -116,19 +154,6 @@ export default function Controls() {
                 <Downloadicon />
                 Download Image
             </button>
-
-
-            <ToastContainer
-                position="top-left"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick={true}
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                theme="colored"
-            />
         </div>
     )
 }

@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/navbars/header/header";
 import Footer from "@/components/navbars/footer";
 import { ReduxProvider } from "@/redux/provider";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,18 @@ export default function RootLayout({
         <ReduxProvider>
           <Header />
           {children}
+
+          <ToastContainer
+            position="top-left"
+            autoClose={2500}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={true}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            theme="colored"
+          />
           <Footer />
         </ReduxProvider>
       </body>

@@ -1,7 +1,8 @@
 "use client"
 
 import { useAppSelector } from "@/redux/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { toast } from "react-toastify"
 
 type dimensionHandler = (value: number | "") => void;
 
@@ -10,16 +11,34 @@ interface DimensionsControlProps {
     width: number | "";
     heightSetter: dimensionHandler;
     widthSetter: dimensionHandler
+    minDimension: number
 }
 
-export default function DimensionsControl({ heightSetter, widthSetter, height, width }: DimensionsControlProps) {
+export default function DimensionsControl({ heightSetter, widthSetter, height, width, minDimension }: DimensionsControlProps) {
+    const toastStyle = { style: { background: "#FCB53B", color: "#fff", borderRadius: "10px", fontWeight: "500" } }
+
     const state = useAppSelector(state => state.images);
 
-    const [maitainAspectRatio, setMaitainAspectRatio] = useState(true)
+    const [maintainAspectRatio, setMaitnainAspectRatio] = useState(true);
+    const [danger, setDanger] = useState({ width: false, height: false });
 
-    const aspectRatio = (state.length && state[0].width && state[0].height) ? (state[0].width / state[0].height) : null;
+    const aspectRatio = useMemo(() => {
+        if (!state.length || !state[0].width || !state[0].height) return null;
+        return state[0].width / state[0].height;
+    }, [state]);
+
 
     const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (state.length === 0) {
+            toast.info("upload an image(s) first");
+            return
+        }
+
+        setDanger(prev => {
+            return { ...prev, width: false }
+        });
+
+
         const value = e.target.value;
         if (value === "") {
             widthSetter("");
@@ -28,14 +47,24 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
             return
         }
 
-        const width = Number(value)
+        const width = Number(value);
         const height = aspectRatio ? Math.round(width / aspectRatio) : "";
 
         widthSetter(width);
-        if (maitainAspectRatio) heightSetter(height)
+        if (maintainAspectRatio) heightSetter(height)
     }
 
     const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (state.length === 0) {
+            toast.info("upload an image(s) first");
+            return
+        }
+
+        setDanger(prev => {
+            return { ...prev, height: false }
+        });
+
+
         const value = e.target.value;
         if (value === "") {
             heightSetter("");
@@ -48,13 +77,44 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
         const width = aspectRatio ? Math.round(height * aspectRatio) : "";
 
         heightSetter(height)
-        if (maitainAspectRatio) widthSetter(width);
+        if (maintainAspectRatio) widthSetter(width);
     }
 
     const handleMaintainAspectRatio = () => {
-        setMaitainAspectRatio(!maitainAspectRatio);
-        heightSetter("")
-        widthSetter("")
+        if (!maintainAspectRatio) { // only when the maintainAspectRatio is off and user tries to turn it on, reset dimensions
+            heightSetter("")
+            widthSetter("")
+        }
+        setMaitnainAspectRatio(!maintainAspectRatio); // toggle the maintainAspectRatio
+
+    }
+
+    const handleBlurWidth = (dimension: number | ""): void => {
+        if (state.length > 0 && dimension) {
+            if (dimension < minDimension) {
+                widthSetter("");
+                setDanger(prev => {
+                    return { ...prev, width: true }
+                });
+                toast.info(`WIDTH must be at least ${minDimension}px`, toastStyle);
+            } else {
+                setDanger({ height: false, width: false })
+            }
+        }
+    };
+
+    const handleBlurHeight = (dimension: number | ""): void => {
+        if (state.length > 0 && dimension) {
+            if (dimension < minDimension) {
+                heightSetter("");
+                setDanger(prev => {
+                    return { ...prev, height: true }
+                });
+                toast.info(`HEIGHT must be at least ${minDimension}px`, toastStyle);
+            } else {
+                setDanger({ height: false, width: false })
+            }
+        }
     }
 
     useEffect(() => {
@@ -77,7 +137,8 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                         placeholder="Width"
                         value={width}
                         onChange={handleWidthChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+                        onBlur={() => handleBlurWidth(width)}
+                        className={`w-full px-4 py-2 border ${danger.width ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent"}  rounded-lg focus:ring-2  outline-none`}
                     />
                 </div>
                 <div>
@@ -86,14 +147,15 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                         placeholder="Height"
                         value={height}
                         onChange={handleHeightChange}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none"
+                        onBlur={() => handleBlurHeight(height)}
+                        className={`w-full px-4 py-2 border ${danger.height ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent"}  rounded-lg focus:ring-2  outline-none`}
                     />
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
                     <input
                         type="checkbox"
-                        defaultChecked={maitainAspectRatio}
-                        onChange={() => handleMaintainAspectRatio()}
+                        checked={maintainAspectRatio}
+                        onChange={handleMaintainAspectRatio}
                         className="w-4 h-4 text-violet-500 border-gray-300 rounded focus:ring-violet-500"
                     />
                     <span className="text-sm text-gray-700">
@@ -101,6 +163,8 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                     </span>
                 </label>
             </div>
+
+
 
         </div>
     )

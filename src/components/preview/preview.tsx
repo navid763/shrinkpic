@@ -14,6 +14,8 @@ export default function Preview() {
     const dispatch = useAppDispatch();
 
     const handleAccept = () => {
+        state.forEach(img => URL.revokeObjectURL(img.url));  // Revoke URLs before emptying Redux (in case if URLs did not revoke befor sending them to redux state)
+
         dispatch(emptyImages());
         setPopUp(false);
     }

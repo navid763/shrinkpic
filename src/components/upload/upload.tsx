@@ -3,14 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { setImages, imageState } from "@/redux/slices/image-slice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { toast } from "react-toastify";
 
 interface uploadedImages {
     url: string;
     size: number;
-    name: string
+    name: string;
+    type: string
 }
 
 export default function Upload() {
+    const MAXIMUM_FILE_SIZE = 10 * 1024  // 10240 KB or 10MB
+    const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [uploadedImages, setUploadedImages] = useState<uploadedImages[]>([]);
@@ -22,15 +26,31 @@ export default function Upload() {
         const files = e.target.files;
         if (!files || files.length === 0) return
 
-        const images = Array.from(files).filter(image => image.type.startsWith("image/"))
+        let images = Array.from(files).filter(image => image.type.startsWith("image/"))
             .map(image => {
                 return {
                     url: URL.createObjectURL(image),
                     size: Math.round(image.size / 1024),
-                    name: image.name
+                    name: image.name,
+                    type: image.type
                 }
             });
-        setUploadedImages(images)
+
+        if (images.filter(img => img.size >= MAXIMUM_FILE_SIZE).length > 0) { // if any file is greater than 10 MB, remove that image
+            toast.error(`maximum file size is ${Math.round(MAXIMUM_FILE_SIZE / 1024)}MB`);
+            images = images.filter(img => img.size <= MAXIMUM_FILE_SIZE)
+        }
+
+        if (images.filter(img => !ALLOWED_TYPES.includes(img.type)).length > 0) { // only asigned types are allowd
+            toast.error(`only ${ALLOWED_TYPES.map(typ => typ.slice(6)).join(", ")} are allowed`);
+            images = images.filter(img => ALLOWED_TYPES.includes(img.type))
+
+        }
+
+        if (images.length > 0) setUploadedImages(images);
+
+        e.target.value = ""; // after setting the uploded image(s), empty the value to be ready for next uploads and prevent possible bugs
+
     };
 
     const handleClick = () => {
@@ -47,19 +67,35 @@ export default function Upload() {
 
         if (!files || files.length === 0) return
 
-        const images = Array.from(files).filter(image => image.type.startsWith("image/"))
+        let images = Array.from(files).filter(image => image.type.startsWith("image/"))
             .map(image => {
                 return {
                     url: URL.createObjectURL(image),
                     size: Math.round(image.size / 1024),
-                    name: image.name
+                    name: image.name,
+                    type: image.type
                 }
             });
-        setUploadedImages(images)
+
+        if (images.filter(img => img.size >= MAXIMUM_FILE_SIZE).length > 0) { // if any file is greater than 10 MB, remove that image
+            toast.error(`maximum file size is ${Math.round(MAXIMUM_FILE_SIZE / 1024)}MB`);
+            images = images.filter(img => img.size <= MAXIMUM_FILE_SIZE)
+        }
+
+        if (images.filter(img => ALLOWED_TYPES.includes(img.type)).length > 0) {
+            toast.error(`only ${ALLOWED_TYPES.map(typ => typ.slice(5)).join(",")} are allowed`);
+            images = images.filter(img => !ALLOWED_TYPES.includes(img.type))
+
+        }
+
+        if (images.length > 0) setUploadedImages(images);
+
     }
 
     useEffect(() => {
         if (uploadedImages.length === 0) return;
+
+        let promiseCancelled = false;
 
         Promise.all(
             uploadedImages.map(image => {
@@ -73,13 +109,19 @@ export default function Upload() {
                             width: img.naturalWidth,
                             height: img.naturalHeight
                         });
+
                     };
                     img.src = image.url;
                 });
             })
         ).then(images => {
-            dispatch(setImages(images))
+            if (!promiseCancelled) dispatch(setImages(images)) // only when the promise is not cancelled, dispatch the action
         });
+
+        return () => {   // cleanup when state changes or component unmounts
+            promiseCancelled = true;
+            uploadedImages.forEach(img => URL.revokeObjectURL(img.url))
+        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [uploadedImages])
@@ -136,8 +178,11 @@ export default function Upload() {
                             WEBP
                         </span>
                     </div>
+                    <p className="text-xs text-violet-400 font-semibold">Maximum file size: 10 MB</p>
+
                 </div>
             </div>
+
         </div>
     )
 }

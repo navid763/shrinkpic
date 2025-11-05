@@ -1,6 +1,7 @@
 import { motion } from "motion/react"
 import CrossSquareIcon from "../icons/cross";
 import DoneIcon from "../icons/done";
+import { useEffect } from "react";
 
 interface ImageRemovePopUpProps {
     accept: () => void;
@@ -8,6 +9,24 @@ interface ImageRemovePopUpProps {
 }
 
 export default function ImageRemovePopUp({ accept, reject }: ImageRemovePopUpProps) {
+
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                accept();
+            } else if (e.key === "Escape") {
+                e.preventDefault();
+                reject();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [accept, reject]);
+
 
     return (
         <motion.div
