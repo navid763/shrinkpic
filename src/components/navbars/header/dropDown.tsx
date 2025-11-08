@@ -32,7 +32,7 @@ export default function DropDown() {
             className="sm:hidden w-[90%] flex flex-col items-end text-sm relative"
         >
             <div onClick={() => setDrop(!drop)}>
-                <MenuIcon className="w-5 h-5 text-neutral-800" />
+                <MenuIcon className="w-5 h-5 text-neutral-800 dark:text-white" />
             </div>
 
             <AnimatePresence>

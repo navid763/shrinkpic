@@ -5,7 +5,7 @@ export interface ThemeState {
 }
 
 const initstate: ThemeState = {
-    mode: (typeof window !== "undefined" && localStorage.getItem("theme") as "light" | "dark") || "light"
+    mode: "light"
 };
 
 export const themeSlice = createSlice({

@@ -117,9 +117,9 @@ export default function Controls() {
 
     return (
         <div className="lg:col-span-1 space-y-6">
-            <div className="rounded-2xl bg-white p-6 border border-purple-100 relative">
+            <div className="rounded-2xl bg-white dark:bg-[#1a1229] p-6 border border-purple-100 dark:border-[#2d2142] relative">
                 <div className="flex items-center justify-between mb-6">
-                    <h2 className="text-lg font-semibold text-neutral-500">Settings</h2>
+                    <h2 className="text-lg font-semibold text-neutral-500 dark:text-[#8b7fb8]">Settings</h2>
                 </div>
 
                 <DimensionsControl
@@ -139,7 +139,7 @@ export default function Controls() {
                     {loading ? <Spinner size={2} className="mb-3" /> : <TicIcon />}
                     Apply Resize
                 </div>
-                {images.length > 1 && <div className="w-full flex justify-center"><span className="w-[90%] self-center text-center text-xs text-white bg-fuchsia-950 rounded-md mt-1.5">Multi-image editing is coming soon ✨</span></div>
+                {images.length > 1 && <div className="w-full flex justify-center"><span className="w-[90%] self-center text-center text-xs text-white dark:text-[#2d2142] bg-fuchsia-950 dark:bg-[#a78bfa] rounded-md mt-1.5">Multi-image editing is coming soon ✨</span></div>
                 }
 
                 {compressionResult &&
@@ -148,7 +148,7 @@ export default function Controls() {
             </div>
 
             <button
-                className={`w-full ${compressionResult ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600" : "bg-fuchsia-300"}  text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-center cursor-pointer gap-2 shadow-lg shadow-violet-200`}
+                className={`w-full ${compressionResult ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600" : "bg-fuchsia-300"}  text-white font-semibold py-4 px-6 rounded-xl transition-all flex items-center justify-center cursor-pointer gap-2`}
                 onClick={handleDownload}
             >
                 <Downloadicon />

@@ -58,7 +58,7 @@ const advantages = [
 export default function Advantages() {
 
     return (
-        <div className="grid sm:grid-cols-3 gap-4 mt-8">
+        <div className="grid sm:grid-cols-3 gap-4 mt-8 ">
             {advantages.map((item: IAdvantage, i) => {
                 return <AdvantageCard title={item.title} description={item.description} svg={item.svg} key={i} />
             })}

@@ -127,7 +127,7 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
 
     return (
         <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-gray-700 dark:text-[#b4a7d6] mb-3">
                 Dimensions
             </label>
             <div className="space-y-3">
@@ -138,7 +138,7 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                         value={width}
                         onChange={handleWidthChange}
                         onBlur={() => handleBlurWidth(width)}
-                        className={`w-full px-4 py-2 border ${danger.width ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent"}  rounded-lg focus:ring-2  outline-none`}
+                        className={`w-full px-4 py-2 border ${danger.width ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent dark:focus:ring-[#f0abfc]"}  rounded-lg focus:ring-2  outline-none`}
                     />
                 </div>
                 <div>
@@ -148,7 +148,7 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                         value={height}
                         onChange={handleHeightChange}
                         onBlur={() => handleBlurHeight(height)}
-                        className={`w-full px-4 py-2 border ${danger.height ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent"}  rounded-lg focus:ring-2  outline-none`}
+                        className={`w-full px-4 py-2 border ${danger.height ? "border-red-400" : "border-gray-300 focus:ring-violet-500 focus:border-transparent dark:focus:ring-[#f0abfc] "}  rounded-lg focus:ring-2  outline-none`}
                     />
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -156,9 +156,9 @@ export default function DimensionsControl({ heightSetter, widthSetter, height, w
                         type="checkbox"
                         checked={maintainAspectRatio}
                         onChange={handleMaintainAspectRatio}
-                        className="w-4 h-4 text-violet-500 border-gray-300 rounded focus:ring-violet-500"
+                        className="w-4 h-4 text-violet-500 border-gray-300 dark:border-[#2d2142] rounded focus:ring-violet-500"
                     />
-                    <span className="text-sm text-gray-700">
+                    <span className="text-sm text-gray-700 dark:text-[#b4a7d6]">
                         Maintain aspect ratio
                     </span>
                 </label>

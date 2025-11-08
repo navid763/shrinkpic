@@ -3,13 +3,13 @@ export default function Footer() {
 
     return (
         <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12">
-            <div className="bg-white rounded-2xl p-8 border border-purple-100">
+            <div className="bg-white rounded-2xl p-8 border border-purple-100 dark:bg-[#1a1229] dark:border-purple-900/50">
                 <div className="grid md:grid-cols-2 gap-8">
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-[#e4e0f1] mb-3">
                             💡 Pro Tips
                         </h3>
-                        <ul className="space-y-2 text-sm text-gray-600">
+                        <ul className="space-y-2 text-sm text-gray-600 dark:text-[#b4a7d6]">
                             <li className="flex items-start gap-2">
                                 <span className="text-violet-500 mt-1">•</span>
                                 <span>Start with 80% quality for optimal balance</span>
@@ -25,10 +25,10 @@ export default function Footer() {
                         </ul>
                     </div>
                     <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-[#e4e0f1] mb-3">
                             🔒 Privacy First
                         </h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="text-sm text-gray-600 leading-relaxed dark:text-[#b4a7d6]">
                             All image processing happens directly in your browser. Your images
                             are never uploaded to any server, ensuring complete privacy and
                             security. Everything stays on your device.
