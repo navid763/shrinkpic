@@ -21,7 +21,7 @@ export default function Checkmark({ show, duration = 1200 }: CheckmarkProps) {
     if (!visible) return null;
 
     return (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/60 rounded-2xl">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/60 dark:bg-[#251a3589] rounded-2xl">
             <svg
                 className="w-16 h-16 text-green-500"
                 viewBox="0 0 52 52"

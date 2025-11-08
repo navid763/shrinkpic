@@ -2,7 +2,6 @@
 
 A modern, privacy-focused web application for compressing and resizing images instantly - all processing happens directly in your browser.
 
-![project logo](logo.png)
 
 ## ✨ Features
 
@@ -181,7 +180,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-navid rahmati - [@email](navidrahmati763@Gmail.com)
+navid rahmati - email: navidrahmati763@gmail.com
 
 Project Link: [https://github.com/navid763/shrinkpic](https://github.com/navid763/shrinkpic)
 
