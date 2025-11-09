@@ -6,6 +6,9 @@ import Footer from "@/components/navbars/footer";
 import { ReduxProvider } from "@/redux/provider";
 import { ToastContainer } from "react-toastify";
 import ThemeSync from "@/components/other/ThemeSync";
+import "react-toastify/dist/ReactToastify.css";
+import { SpeedInsights } from '@vercel/speed-insights/next';
+
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -68,8 +71,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           {children}
           <ThemeSync />
+          <SpeedInsights />
           <ToastContainer
             position="top-left"
+            style={{ // changing position to center-left
+              top: '40%',
+              left: '0rem',
+              transform: 'translateY(-50%)',
+            }}
             autoClose={2500}
             hideProgressBar={false}
             newestOnTop={false}

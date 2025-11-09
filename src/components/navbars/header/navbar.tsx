@@ -1,13 +1,19 @@
-import ThemeSelect from "./theme-select"
-export default function NavBar() {
+"use client"
 
+import ThemeSelect from "./theme-select";
+import PricingPopup from "./pricing-popup";
+import { useState } from "react";
+
+export default function NavBar() {
+    const [pricingPopUp, setPricingPopUp] = useState(false)
     return (
         <>
             <div className="flex flex-col text-white sm:text-neutral-800 sm:flex-row justify-center items-center gap-3 sm:dark:text-[#e4e0f1]">
                 <span>COMPRESS</span>
                 <span>RESIZE</span>
-                <span>PRICING</span>
+                <span onClick={() => setPricingPopUp(true)} className="cursor-pointer" >PRICING</span>
                 <span>ABOUT US</span>
+                {pricingPopUp && <PricingPopup popUpHandler={setPricingPopUp} />}
             </div>
 
             <ThemeSelect />

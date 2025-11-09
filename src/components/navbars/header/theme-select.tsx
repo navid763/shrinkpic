@@ -33,7 +33,7 @@ export default function ThemeSelect() {
 
     return (
         <motion.div
-            className="flex items-center justify-center w-[80px] h-[30px] text-white sm:text-neutral-800 rounded-2xl sm:bg-white/75 backdrop-blur-md border border-neutral-300 gap-1.5 px-2.5 py-1 hover:text-[#8b5cf6] hover:border-[#e4e0f1] cursor-pointer"
+            className="flex items-center justify-center w-[80px] h-[30px] text-white sm:text-neutral-800 rounded-2xl sm:bg-white/75 backdrop-blur-md border border-neutral-300 gap-1.5 px-2.5 py-1 sm:hover:text-[#8b5cf6] hover:border-[#e4e0f1] cursor-pointer"
             onClick={() => dispatch(toggleTheme())}
 
             initial={{ opacity: 0 }}
