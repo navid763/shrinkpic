@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import ThemeSync from "@/components/other/ThemeSync";
 import "react-toastify/dist/ReactToastify.css";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from "@vercel/analytics/next"
 
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -69,9 +70,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <ReduxProvider>
           <Header />
+
           {children}
           <ThemeSync />
+
           <SpeedInsights />
+          <Analytics />
           <ToastContainer
             position="top-left"
             style={{ // changing position to center-left
