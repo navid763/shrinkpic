@@ -45,7 +45,7 @@ export default function ContactUsPopup({ popUpHandler }: IContactPopup) {
                 className="w-full max-w-md max-h-[95vh] bg-gradient-to-br from-white to-blue-50 dark:from-[#1a1229] dark:to-[#1a2335] rounded-3xl shadow-2xl overflow-y-hidden"
             >
 
-                <div className="relative max-h-[37vh] sm-max-h-56 bg-gradient-to-r from-blue-500 to-cyan-500 px-6 sm:px-8 py-8 sm:py-12 text-center">
+                <div className="relative max-h-[37vh] sm-max-h-56 bg-gradient-to-r from-blue-500 to-cyan-500 px-6 sm:px-8 pt-4 pb-12 text-center">
                     <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
                     <div className="absolute bottom-4 right-4 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
 
