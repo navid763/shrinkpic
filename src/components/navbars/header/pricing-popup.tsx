@@ -1,5 +1,6 @@
 "use client"
 import { motion } from "motion/react";
+import CloseIcon from "@/components/icons/close-x";
 
 interface IPricingPopup {
     popUpHandler: (showPopUp: boolean) => void
@@ -18,15 +19,23 @@ export default function PricingPopup({ popUpHandler }: IPricingPopup) {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
                 transition={{ type: "spring", duration: 0.5 }}
-                className="w-full max-w-md bg-gradient-to-br from-white to-purple-50 dark:from-[#1a1229] dark:to-[#251a35] rounded-3xl shadow-2xl overflow-hidden"
+                className=" w-full max-w-md bg-gradient-to-br from-white to-purple-50 dark:from-[#1a1229] dark:to-[#251a35] rounded-3xl shadow-2xl overflow-hidden"
             >
-                {/* Header with decorative elements */}
+
+
                 <div className="relative bg-gradient-to-r from-violet-500 to-fuchsia-500 px-8 py-12 text-center">
-                    {/* Decorative circles */}
+
                     <div className="absolute top-4 left-4 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
                     <div className="absolute bottom-4 right-4 w-16 h-16 bg-white/10 rounded-full blur-xl"></div>
 
-                    {/* Gift/Star Icon */}
+                    <div
+                        onClick={() => popUpHandler(false)}
+                        className="cursor-pointer w-fit absolute left-8 top-7"
+                    >
+                        <CloseIcon className="w-6 h-6 text-white " />
+                    </div>
+
+
                     <motion.div
                         initial={{ rotate: -10, scale: 0 }}
                         animate={{ rotate: 0, scale: 1 }}
@@ -70,7 +79,6 @@ export default function PricingPopup({ popUpHandler }: IPricingPopup) {
 
                 <div className="px-8 py-4">
                     <div className="sm:space-y-4 space-y-2">
-                        {/* Feature items */}
                         {[
                             { icon: "✨", text: "Unlimited image compression" },
                             { icon: "🎨", text: "Resize as many images as you want" },
@@ -91,7 +99,6 @@ export default function PricingPopup({ popUpHandler }: IPricingPopup) {
                     </div>
 
 
-                    {/* Close button placeholder */}
                     <motion.button
                         initial={{ y: 20, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -103,7 +110,6 @@ export default function PricingPopup({ popUpHandler }: IPricingPopup) {
                     </motion.button>
                 </div>
 
-                {/* Bottom decoration */}
                 {/* <div className="h-2 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-purple-500"></div> */}
             </motion.div>
         </motion.div>
