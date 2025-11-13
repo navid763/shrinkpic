@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/navbars/header/header";
-import Footer from "@/components/navbars/footer";
+import Footer from "@/components/navbars/footer/footer";
 import { ReduxProvider } from "@/redux/provider";
 import { ToastContainer } from "react-toastify";
 import ThemeSync from "@/components/other/ThemeSync";
@@ -20,8 +20,43 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "shrinkPic",
-  description: "Easily resize and compress images",
+  title: "shrinkPic - Free Online Image Compressor & Resizer",
+  description: "Compress and resize images instantly in your browser. Free, fast, and private. Support for JPG, PNG, and WebP. No upload required - all processing happens locally.",
+  keywords: ["image compressor", "image resizer", "compress images", "resize images", "optimize images", "reduce image size", "free image tool", "online image editor"],
+  authors: [{ name: "Navid Rahmati" }],
+  creator: "Navid Rahmati",
+  publisher: "shrinkPic",
+  openGraph: {
+    title: "shrinkPic - Free Image Compressor & Resizer",
+    description: "Compress and resize images instantly. 100% free and private - all processing in your browser.",
+    url: "https://www.shrinkpic.ir/",
+    siteName: "shrinkPic",
+    // images: [
+    //   {
+    //     url: "/og-image.jpg",
+    //     width: 1200,
+    //     height: 630,
+    //     alt: "shrinkPic - Free Image Compressor",
+    //   },
+    // ],
+    locale: "en_US",
+    type: "website",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "your-google-verification-code",
+  },
 };
 
 // 🟢 helper function runs on server + client

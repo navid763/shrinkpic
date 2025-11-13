@@ -1,8 +1,7 @@
-
 export default function Footer() {
 
     return (
-        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-12">
+        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mt-4">
             <div className="bg-white rounded-2xl p-8 border border-purple-100 dark:bg-[#1a1229] dark:border-purple-900/50">
                 <div className="grid md:grid-cols-2 gap-8">
                     <div>
@@ -23,7 +22,9 @@ export default function Footer() {
                                 <span>For web use, 1920 px width is usually sufficient</span>
                             </li>
                         </ul>
+
                     </div>
+
                     <div>
                         <h3 className="text-lg font-semibold text-gray-800 dark:text-[#e4e0f1] mb-3">
                             🔒 Privacy First
@@ -33,7 +34,11 @@ export default function Footer() {
                             are never uploaded to any server, ensuring complete privacy and
                             security. Everything stays on your device.
                         </p>
+                        <p className="text-xs text-gray-500 mt-6 dark:text-[#8b7fb8]">
+                            Built by <a className="text-violet-600 font-semibold dark:text-[#baace2]" href="mailto:navidrahmati763@gmail.com">Navid Rahmati</a>
+                        </p>
                     </div>
+
                 </div>
             </div>
         </footer>
