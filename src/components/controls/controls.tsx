@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import { ImageProcessingService, ProcessedImageResult } from "@/services/browser-image-compression/image-processing.service";
 import Spinner from "../spinner/spinner";
 import Checkmark from "../other/checknark";
+import FormatSelector from "./format-selector";
+
+export type Formats = "jpg" | "png" | "webp";
 
 export default function Controls() {
     const CHECKMARK_DURATION = 1200 //ms
@@ -21,10 +24,11 @@ export default function Controls() {
     const [height, setHeight] = useState<number | "">("");
     const [width, setWidth] = useState<number | "">("");
     const [quality, setQuality] = useState(80);
+    const [format, setFormat] = useState<Formats>("jpg");
     const [compressionResult, setCompressionResult] = useState<ProcessedImageResult | null>(null)
     const [loading, setLoading] = useState(false);
     const [showCheckMark, setShowCheckMark] = useState(false);
-    const [initialSettings, setInitialSettings] = useState<{ width: number | "", height: number | "", quality: number } | null>(null)
+    const [initialSettings, setInitialSettings] = useState<{ width: number | "", height: number | "", quality: number, format: string } | null>(null)
 
     const handleHeight = useCallback((height: number | "") => {
         setHeight(height);
@@ -38,11 +42,16 @@ export default function Controls() {
         setQuality(quality);
     }, []);
 
+    const handleFormat = useCallback((format: Formats) => {
+        setFormat(format)
+    }, []);
+
     const hasChanged = () => {
         if (!initialSettings) return true;
         return initialSettings.width !== width ||
             initialSettings.height !== height ||
-            initialSettings.quality !== quality;
+            initialSettings.quality !== quality ||
+            initialSettings.format !== format;
     };
 
     const anyControlIsNotSet = (!quality || !width || !height);
@@ -70,12 +79,13 @@ export default function Controls() {
                         quality: quality,
                         targetHeight: height,
                         targetWidth: width,
-                        name: image.name
+                        name: image.name,
+                        format: format
 
                     });
 
                     setCompressionResult(result);
-                    setInitialSettings({ width: width as number, height: height as number, quality });
+                    setInitialSettings({ width: width as number, height: height as number, quality, format });
 
                 } catch (error) {
                     toast.error("Error during proccessing the image. please try again");
@@ -132,8 +142,10 @@ export default function Controls() {
 
                 <QualitySlider qualitySetter={handleQuality} quality={quality} />
 
+                <FormatSelector format={format} formatSetter={handleFormat} />
+
                 <div
-                    className={`w-full   mt-4 text-white font-medium py-2 px-4 rounded-lg flex  items-center justify-center cursor-pointer ${(!anyControlIsNotSet && images.length === 1) ? "bg-violet-500 hover:bg-violet-600 transition-colors" : "bg-violet-300"} ${loading ? "gap-4" : "gap-2"}`}
+                    className={`w-full  mt-7 text-white font-medium py-2 px-4 rounded-lg flex  items-center justify-center cursor-pointer ${(!anyControlIsNotSet && images.length === 1) ? "bg-violet-500 hover:bg-violet-600 transition-colors" : "bg-violet-300"} ${loading ? "gap-4" : "gap-2"}`}
                     onClick={applyChanges}
                 >
                     {loading ? <Spinner size={2} className="mb-3" /> : <TicIcon />}
@@ -145,6 +157,7 @@ export default function Controls() {
                 {compressionResult &&
                     <FileInfo originalSize={compressionResult.originalSizeKB} compressedSize={compressionResult.compressedSizeKB} savedPercentage={compressionResult.savedPercentage} />}
                 <Checkmark show={showCheckMark} duration={CHECKMARK_DURATION} />
+
             </div>
 
             <button
