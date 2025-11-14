@@ -22,23 +22,27 @@ const roboto = Roboto({
 export const metadata: Metadata = {
   title: "shrinkPic - Free Online Image Compressor & Resizer",
   description: "Compress and resize images instantly in your browser. Free, fast, and private. Support for JPG, PNG, and WebP. No upload required - all processing happens locally.",
-  keywords: ["image compressor", "image resizer", "compress images", "resize images", "optimize images", "reduce image size", "free image tool", "online image editor"],
+  metadataBase: new URL("https://www.shrinkpic.ir/"),
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",  // for old browsers
+  }, keywords: ["image compressor", "image resizer", "compress images", "resize images", "optimize images", "reduce image size", "free image tool", "online image editor"],
   authors: [{ name: "Navid Rahmati" }],
   creator: "Navid Rahmati",
   publisher: "shrinkPic",
   openGraph: {
     title: "shrinkPic - Free Image Compressor & Resizer",
     description: "Compress and resize images instantly. 100% free and private - all processing in your browser.",
-    url: "https://www.shrinkpic.ir/",
+    url: "/",
     siteName: "shrinkPic",
-    // images: [
-    //   {
-    //     url: "/og-image.jpg",
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "shrinkPic - Free Image Compressor",
-    //   },
-    // ],
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "shrinkPic - Free Image Compressor",
+      },
+    ],
     locale: "en_US",
     type: "website",
   },
