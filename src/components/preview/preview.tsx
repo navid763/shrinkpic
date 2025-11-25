@@ -34,7 +34,7 @@ export default function Preview() {
                             className="bg-gradient-to-r from-[#ec008c] to-[#fc6767] text-white text-xs sm:text-sm cursor-pointer rounded-2xl h-8 sm:h-10 px-2 py-0"
                             onClick={() => setPopUp(true)}
                         >
-                            Remove</button>
+                            Clear</button>
                     }
                     {popUp &&
                         <ImageRemovePopUp accept={handleAccept} reject={handleRject} />
