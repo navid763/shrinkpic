@@ -37,9 +37,6 @@ export default function Footer() {
 
                     </div>
 
-                    <p className="text-xs text-gray-500 sm:text-center mt-4 dark:text-[#8b7fb8]">
-                        Built by <a className="text-violet-600 font-semibold dark:text-[#baace2]" href="mailto:navidrahmati763@gmail.com">Navid Rahmati</a>
-                    </p>
 
                 </div>
             </div>

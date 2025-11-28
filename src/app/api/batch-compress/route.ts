@@ -1,32 +1,82 @@
 import { NextRequest, NextResponse } from "next/server";
 import sharp from "sharp";
 import { Formats } from "@/components/controls/controls";
-
+import { ResizeStrategy } from "@/components/controls/resize-strategy-selector";
 
 export async function POST(req: NextRequest) {
-
     try {
         const formData = await req.formData();
 
         const files = formData.getAll("images") as File[];
         const quality = parseInt(formData.get("quality") as string);
-        const width = formData.get("width") as string ? parseInt(formData.get("width") as string) : undefined;
-        const height = formData.get("height") as string ? parseInt(formData.get("height") as string) : undefined;
+        const resizeStrategy = formData.get("resizeStrategy") as ResizeStrategy;
+        const maxWidth = formData.get("maxWidth") ? parseInt(formData.get("maxWidth") as string) : undefined;
+        const maxHeight = formData.get("maxHeight") ? parseInt(formData.get("maxHeight") as string) : undefined;
         const format = formData.get("format") as Formats;
 
         const results = await Promise.all(
             files.map(async (file) => {
                 const buffer = Buffer.from(await file.arrayBuffer());
-
                 let pipeline = sharp(buffer);
 
-                if (width || height) {
-                    pipeline = pipeline.resize(width, height, {
-                        fit: 'inside',
-                        withoutEnlargement: true
+                // Get original dimensions
+                const metadata = await sharp(buffer).metadata();
+                const originalWidth = metadata.width || 0;
+                const originalHeight = metadata.height || 0;
+
+                // Apply resize strategy
+                let targetWidth: number | undefined;
+                let targetHeight: number | undefined;
+
+                switch (resizeStrategy) {
+                    case "original":
+                        // No resize
+                        break;
+
+                    case "max-width":
+                        if (maxWidth && originalWidth > maxWidth) {
+                            targetWidth = maxWidth;
+                            // Height will be calculated automatically by Sharp
+                        }
+                        break;
+
+                    case "max-height":
+                        if (maxHeight && originalHeight > maxHeight) {
+                            targetHeight = maxHeight;
+                            // Width will be calculated automatically by Sharp
+                        }
+                        break;
+
+                    case "max-dimension":
+                        if (maxWidth) {
+                            const maxDimension = maxWidth; // Using maxWidth as the max dimension value
+                            if (originalWidth > maxDimension || originalHeight > maxDimension) {
+                                if (originalWidth > originalHeight) {
+                                    targetWidth = maxDimension;
+                                } else {
+                                    targetHeight = maxDimension;
+                                }
+                            }
+                        }
+                        break;
+
+                    case "fit-inside":
+                        if (maxWidth && maxHeight) {
+                            targetWidth = maxWidth;
+                            targetHeight = maxHeight;
+                        }
+                        break;
+                }
+
+                // Apply resize if needed
+                if (targetWidth || targetHeight) {
+                    pipeline = pipeline.resize(targetWidth, targetHeight, {
+                        fit: resizeStrategy === "fit-inside" ? "inside" : "inside",
+                        withoutEnlargement: true // Don't upscale images
                     });
                 }
 
+                // Format conversion and compression
                 if (format === "jpg") {
                     pipeline = pipeline.jpeg({ quality });
                 } else if (format === "png") {
@@ -36,38 +86,26 @@ export async function POST(req: NextRequest) {
                 }
 
                 const processedBuffer = await pipeline.toBuffer();
-
-
-
-                const metadata = await sharp(processedBuffer).metadata();
+                const processedMetadata = await sharp(processedBuffer).metadata();
 
                 return {
                     data: processedBuffer.toString('base64'),
                     name: file.name,
                     originalSize: file.size,
                     compressedSize: processedBuffer.length,
-                    width: metadata.width,
-                    height: metadata.height,
-                    format: metadata.format
+                    width: processedMetadata.width,
+                    height: processedMetadata.height,
+                    format: processedMetadata.format
                 };
             })
         );
 
         return NextResponse.json({ success: true, images: results });
-    }
-    catch (err) {
+    } catch (err) {
         console.error('Batch processing error:', err);
         return NextResponse.json(
             { success: false, error: 'Processing failed' },
             { status: 500 }
         );
     }
-
 }
-
-export const config = {
-    api: {
-        bodyParser: false,
-        responseLimit: '50mb'
-    }
-};

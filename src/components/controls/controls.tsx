@@ -14,6 +14,7 @@ import Checkmark from "../other/checknark";
 import FormatSelector from "./format-selector";
 import { BatchProcessingService, BatchProcessingResults } from "@/services/multi-image-processing/batch-processing.service";
 import ProgressTracker from "./progress-tracker";
+import ResizeStrategySelector, { ResizeStrategy } from "./resize-strategy-selector";
 
 export type Formats = "jpg" | "png" | "webp";
 type ProcessingStage = "preparing" | "uploading" | "processing" | "complete";
@@ -32,11 +33,16 @@ export default function Controls() {
     const [batchResults, setBatchResults] = useState<BatchProcessingResults[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [showCheckMark, setShowCheckMark] = useState(false);
-    const [initialSettings, setInitialSettings] = useState<{ width: number | "", height: number | "", quality: number, format: string } | null>(null)
+    const [initialSettings, setInitialSettings] = useState<{ width: number | "", height: number | "", quality: number, format: string, strategy: ResizeStrategy | null, maxWidth: number | "", maxHeight: number | "" } | null>(null)
 
+    // for multi image processing:
     const [processingStage, setProcessingStage] = useState<ProcessingStage>("preparing");
     const [processedCount, setProcessedCount] = useState(0);
     const [uploadProgress, setUploadProgress] = useState(0);
+
+    const [resizeStrategy, setResizeStrategy] = useState<ResizeStrategy>("max-dimension");
+    const [maxWidth, setMaxWidth] = useState<number | "">(1920);
+    const [maxHeight, setMaxHeight] = useState<number | "">(1080);
 
     const handleHeight = useCallback((height: number | "") => {
         setHeight(height);
@@ -56,14 +62,19 @@ export default function Controls() {
 
     const hasChanged = () => {
         if (!initialSettings) return true;
+
         return initialSettings.width !== width ||
             initialSettings.height !== height ||
             initialSettings.quality !== quality ||
-            initialSettings.format !== format;
+            initialSettings.format !== format ||
+            initialSettings.strategy !== resizeStrategy ||
+            initialSettings.maxWidth !== maxWidth ||
+            initialSettings.maxHeight !== maxHeight;
+
     };
 
     const anyControlIsNotSetSingle = (!quality || !width || !height);
-    const anyControlIsNotSetMulti = (!quality || (!width && !height));
+    const anyControlIsNotSetMulti = (!quality || !resizeStrategy);
 
     async function applyChanges() {
         if (images.length !== 0) {
@@ -92,7 +103,7 @@ export default function Controls() {
                     });
 
                     setCompressionResult(result);
-                    setInitialSettings({ width: width as number, height: height as number, quality, format });
+                    setInitialSettings({ width: width as number, height: height as number, quality, format, strategy: null, maxHeight: "", maxWidth: "" });
 
                 } catch (error) {
                     toast.error("Error during proccessing the image. please try again");
@@ -114,10 +125,11 @@ export default function Controls() {
                 const options = {
                     images: imagesToProcess,
                     quality: quality,
-                    width: width ? width : undefined,
-                    height: height ? height : undefined,
+                    resizeStrategy: resizeStrategy,
+                    maxWidth: maxWidth || undefined,
+                    maxHeight: maxHeight || undefined,
                     format: format
-                }
+                };
 
                 try {
                     setLoading(true);
@@ -142,7 +154,7 @@ export default function Controls() {
                     );
                     setProcessingStage("complete");
                     setBatchResults(results);
-                    setInitialSettings({ width: width as number, height: height as number, quality, format });
+                    setInitialSettings({ width: width as number, height: height as number, quality, format, strategy: resizeStrategy, maxHeight: maxHeight, maxWidth: maxWidth });
                     toast.success(`Successfully processed ${results.length} images!`);
 
                 } catch (err) {
@@ -197,13 +209,25 @@ export default function Controls() {
                     <h2 className="text-lg font-semibold text-neutral-500 dark:text-[#8b7fb8]">Settings</h2>
                 </div>
 
-                <DimensionsControl
-                    heightSetter={handleHeight}
-                    widthSetter={handleWidth}
-                    height={height}
-                    width={width}
-                    minDimension={MIN_DIMENSION}
-                />
+                {images.length === 1 ? (
+                    <DimensionsControl
+                        heightSetter={handleHeight}
+                        widthSetter={handleWidth}
+                        height={height}
+                        width={width}
+                        minDimension={MIN_DIMENSION}
+                    />
+                ) : (
+                    <ResizeStrategySelector
+                        strategy={resizeStrategy}
+                        strategySetter={setResizeStrategy}
+                        maxWidth={maxWidth}
+                        maxHeight={maxHeight}
+                        maxWidthSetter={setMaxWidth}
+                        maxHeightSetter={setMaxHeight}
+                        multiImage={true}
+                    />
+                )}
 
                 <QualitySlider qualitySetter={handleQuality} quality={quality} />
 
@@ -243,7 +267,7 @@ export default function Controls() {
                         </h3>
                         <div className="text-sm text-green-700 dark:text-green-300 space-y-1">
                             <p>Processed: {batchResults.length} images</p>
-                            <p>Total saved: {batchResults.reduce((acc, r) => acc + r.savedPercentage, 0) / batchResults.length}% average</p>
+                            <p>Total saved: {Math.round(batchResults.reduce((acc, r) => acc + r.savedPercentage, 0) / batchResults.length)}% average</p>
                         </div>
                     </div>
                 )}

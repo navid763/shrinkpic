@@ -1,7 +1,7 @@
 import { Formats } from "@/components/controls/controls";
 // import { Blob } from "buffer";
 import { ImageProcessingService } from "../browser-image-compression/image-processing.service";
-
+import { ResizeStrategy } from "@/components/controls/resize-strategy-selector";
 
 export interface ProgressCallback {
     onProgress?: (current: number, total: number) => void;
@@ -17,8 +17,9 @@ interface ImageInput {
 export interface BatchProcessingOptions {
     images: ImageInput[];
     quality: number;
-    width?: number;
-    height?: number;
+    resizeStrategy: ResizeStrategy;
+    maxWidth?: number;
+    maxHeight?: number;
     format: Formats
 }
 
@@ -45,7 +46,7 @@ export class BatchProcessingService {
         callbacks: ProgressCallback
     ): Promise<BatchProcessingResults[]> {
 
-        const { images, quality, width, height, format } = options;
+        const { images, quality, resizeStrategy, maxWidth, maxHeight, format } = options;
         const { onProgress, onUploadProgress } = callbacks || {};
 
         this.validateImqges(images);
@@ -58,10 +59,12 @@ export class BatchProcessingService {
         for (let i = 0; i < chunks.length; i++) {
             const chunk = chunks[i];
             const formData = new FormData();
+
             chunk.forEach(file => formData.append("images", file));
             formData.append("quality", quality.toString());
-            if (width) formData.append('width', width.toString());
-            if (height) formData.append('height', height.toString());
+            formData.append("resizeStrategy", resizeStrategy);
+            if (maxWidth) formData.append('maxWidth', maxWidth.toString());
+            if (maxHeight) formData.append('maxHeight', maxHeight.toString());
             formData.append('format', format);
 
             try {

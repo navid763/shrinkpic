@@ -133,6 +133,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           />
           <Footer />
         </ReduxProvider>
+
+        <p className="w-[50%] text-xs text-gray-500 sm:text-center px-4 pb-6 dark:text-[#8b7fb8]">
+          Built by <a className="text-violet-600 font-semibold dark:text-[#baace2]" href="mailto:navidrahmati763@gmail.com">Navid Rahmati</a>
+        </p>
       </body>
     </html>
   );
