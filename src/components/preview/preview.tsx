@@ -26,12 +26,12 @@ export default function Preview() {
     return (
         <div className="lg:col-span-2 sm:order-2">
             <div className="bg-white dark:bg-[#1a1229] rounded-2xl p-6 border border-purple-100 dark:border-[#2d2142]">
-                <div className="w-full flex justify-between relative px-4">
+                <div className="w-[90%] justify-self-center flex justify-between relative px-4">
                     <h2 className="sm:text-lg font-semibold text-neutral-500 dark:text-[#8b7fb8] mb-4">Preview</h2>
 
                     {state.length > 0 &&
                         <button
-                            className="bg-gradient-to-r from-[#ec008c] to-[#fc6767] text-white text-xs sm:text-sm cursor-pointer rounded-2xl h-8 sm:h-10 px-2 py-0"
+                            className="bg-gradient-to-r from-[#ec008c] to-[#fc6767] text-white text-xs sm:text-sm cursor-pointer rounded-2xl h-8 px-2 py-0"
                             onClick={() => setPopUp(true)}
                         >
                             Clear</button>
