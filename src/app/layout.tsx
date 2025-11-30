@@ -87,6 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={initialThemeClass} suppressHydrationWarning>
       <head>
+        <link rel="preload" as="image" href="/logo/logo.png" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
