@@ -100,6 +100,7 @@ export default function Controls() {
 
                 try {
                     setLoading(true);
+                    setCompressionResult(null);
 
                     const image = images[0];
 
@@ -144,6 +145,7 @@ export default function Controls() {
 
                 try {
                     setLoading(true);
+                    setBatchResults(null);
                     setProcessingStage("preparing");
                     setProcessedCount(0);
                     setUploadProgress(0);
