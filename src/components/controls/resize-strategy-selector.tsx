@@ -1,13 +1,13 @@
 "use client"
 
 export type ResizeStrategy =
-    | "original"           // Keep original dimensions
-    | "max-width"          // Set max width, maintain aspect ratio
-    | "max-height"         // Set max height, maintain aspect ratio
-    | "max-dimension"      // Set max for longest side
-    | "fixed"              // Fixed dimensions (may distort)
-    | "fit-inside"         // Fit inside box, maintain aspect ratio
-    | "cover";             // Cover box, may crop
+    | "original"
+    | "max-width"
+    | "max-height"
+    | "max-dimension"
+    | "fixed"
+    | "fit-inside"
+    | "cover";
 
 interface ResizeStrategyProps {
     strategy: ResizeStrategy;

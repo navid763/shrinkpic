@@ -63,15 +63,26 @@ export default function Controls() {
     const hasChanged = () => {
         if (!initialSettings) return true;
 
-        return initialSettings.width !== width ||
-            initialSettings.height !== height ||
-            initialSettings.quality !== quality ||
-            initialSettings.format !== format ||
-            initialSettings.strategy !== resizeStrategy ||
-            initialSettings.maxWidth !== maxWidth ||
-            initialSettings.maxHeight !== maxHeight;
-
+        if (images.length === 1) {
+            // Single
+            return (
+                initialSettings.width !== width ||
+                initialSettings.height !== height ||
+                initialSettings.quality !== quality ||
+                initialSettings.format !== format
+            );
+        } else {
+            // Multi
+            return (
+                initialSettings.quality !== quality ||
+                initialSettings.format !== format ||
+                initialSettings.strategy !== resizeStrategy ||
+                initialSettings.maxWidth !== maxWidth ||
+                initialSettings.maxHeight !== maxHeight
+            );
+        }
     };
+
 
     const anyControlIsNotSetSingle = (!quality || !width || !height);
     const anyControlIsNotSetMulti = (!quality || !resizeStrategy);
