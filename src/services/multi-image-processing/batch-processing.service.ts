@@ -37,7 +37,8 @@ export interface BatchProcessingResults {
 
 
 export class BatchProcessingService {
-    private static API_ENDPOINT = '/api/batch-compress';
+    // private static API_ENDPOINT = '/api/batch-compress';
+    private static API_ENDPOINT = 'https://shrinkpic.onrender.com/batch-compress';
     private static MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
     private static MAX_BATCH_SIZE = 20; // Max images per batch
 
@@ -68,7 +69,7 @@ export class BatchProcessingService {
             formData.append('format', format);
 
             try {
-                const response = await this.uploadWithProgress(
+                const response = await this.uploadWithProgressLogged(
                     formData,
                     onUploadProgress
                 );
@@ -266,5 +267,68 @@ export class BatchProcessingService {
 
     static revokeUrls(results: BatchProcessingResults[]) {
         results.forEach(result => URL.revokeObjectURL(result.url));
+    }
+
+    private static uploadWithProgressLogged(
+        formData: FormData,
+        onUploadProgress?: (percentage: number) => void
+    ): Promise<Response> {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+
+            // 🔍 Debug: Log the URL being called
+            console.log('🌐 Calling API:', this.API_ENDPOINT);
+
+            // Increase timeout for Render cold starts
+            xhr.timeout = 120000; // 2 minutes
+
+            // Track upload progress
+            xhr.upload.addEventListener('progress', (event) => {
+                if (event.lengthComputable && onUploadProgress) {
+                    const percentage = Math.round((event.loaded / event.total) * 100);
+                    onUploadProgress(percentage);
+                }
+            });
+
+            // Handle timeout
+            xhr.addEventListener('timeout', () => {
+                reject(new Error('Request timed out. Server may be waking up, please try again.'));
+            });
+
+            // Handle completion
+            xhr.addEventListener('load', () => {
+                console.log('📡 Response status:', xhr.status, xhr.statusText);
+
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    // Create a Response object from XMLHttpRequest
+                    const response = new Response(xhr.responseText, {
+                        status: xhr.status,
+                        statusText: xhr.statusText,
+                        headers: new Headers({
+                            'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/json'
+                        })
+                    });
+                    resolve(response);
+                } else {
+                    console.error('❌ Server error:', xhr.responseText);
+                    reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                }
+            });
+
+            // Handle errors
+            xhr.addEventListener('error', () => {
+                console.error('❌ Network error');
+                reject(new Error('Network error occurred'));
+            });
+
+            xhr.addEventListener('abort', () => {
+                console.error('❌ Upload aborted');
+                reject(new Error('Upload aborted'));
+            });
+
+            // Send request
+            xhr.open('POST', this.API_ENDPOINT);
+            xhr.send(formData);
+        });
     }
 }
