@@ -2,13 +2,23 @@
 
 import ThemeSelect from "./theme-select";
 import PricingPopup from "./pricing-popup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ContactUsPopup from "./contact-us";
 
 export default function NavBar() {
-    const [pricingPopUp, setPricingPopUp] = useState(false)
-    const [contactPopUp, setContactPopUp] = useState(false)
+    const [pricingPopUp, setPricingPopUp] = useState(false);
+    const [contactPopUp, setContactPopUp] = useState(false);
+    const [authToast, setAuthToast] = useState(false);
 
+    useEffect(() => {
+        if (!authToast) return
+
+        const timer = setTimeout(() => {
+            setAuthToast(false);
+        }, 2500);
+
+        return () => clearTimeout(timer);
+    }, [authToast]);
 
     return (
         <>
@@ -25,9 +35,15 @@ export default function NavBar() {
             <ThemeSelect />
 
             <div className="w-full sm:w-[25%] justify-center flex gap-3">
-                <button className="w-[45%]  sm:w-[max(45%,_80px)] bg-white text-center border text-neutral-800  border-neutral-300 rounded-lg px-2.5 py-1 sm:dark:bg-[#251a35] sm:dark:border-purple-800 sm:dark:text-white">logIn</button>
-                <button className="w-[45%]  sm:w-[max(45%,_80px)] bg-blue-500 text-center text-white rounded-lg px-2.5 py-1">sinUp</button>
-            </div>
+                {!authToast &&
+                    <>
+                        <button className="w-[45%]  sm:w-[max(45%,_80px)] bg-white text-center border text-neutral-800  border-neutral-300 rounded-lg px-2.5 py-1 sm:dark:bg-[#251a35] sm:dark:border-purple-800 sm:dark:text-white" onClick={() => setAuthToast(true)}>logIn</button>
+                        <button className="w-[45%]  sm:w-[max(45%,_80px)] bg-blue-500 text-center text-white rounded-lg px-2.5 py-1 cursor-pointer" onClick={() => setAuthToast(true)}>sinUp</button>
+
+                    </>}
+
+                {authToast && <p className="w-[120px] sm:w-fit text-xs sm:text-sm text-white rounded-lg bg-blue-500 p-2 sm:dark:border-purple-800">authentication will be available soon!</p>
+                }            </div>
         </>
     )
 }

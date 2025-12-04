@@ -62,11 +62,11 @@ export default function ProgressTracker({ current, total, stage, uploadProgress 
             )}
 
             {/* Percentage display */}
-            <div className="text-center">
+            {/* <div className="text-center">
                 <span className="text-2xl font-bold text-violet-600 dark:text-[#a78bfa]">
                     {percentage}%
                 </span>
-            </div>
+            </div> */}
         </div>
     );
 }
