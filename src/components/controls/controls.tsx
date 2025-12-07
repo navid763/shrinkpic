@@ -12,7 +12,7 @@ import { ImageProcessingService, ProcessedImageResult } from "@/services/browser
 import Spinner from "../spinner/spinner";
 import Checkmark from "../other/checknark";
 import FormatSelector from "./format-selector";
-import { BatchProcessingService, BatchProcessingResults } from "@/services/multi-image-processing/batch-processing.service";
+import { BatchProcessingService, BatchProcessingResults, RateLimitError } from "@/services/multi-image-processing/batch-processing.service";
 import ProgressTracker from "./progress-tracker";
 import ResizeStrategySelector, { ResizeStrategy } from "./resize-strategy-selector";
 
@@ -171,8 +171,42 @@ export default function Controls() {
                     toast.success(`Successfully processed ${results.length} images!`);
 
                 } catch (err) {
-                    console.error(err);
-                    toast.error("Error during batch processing. Please try again");
+                    console.error("Batch processing error:", err);
+
+                    if (err instanceof RateLimitError) {
+                        // Calculate user-friendly time message
+                        const retrySeconds = err.retryAfter || 0;
+                        const retryMinutes = Math.ceil(retrySeconds / 60);
+
+                        let timeMessage = "";
+                        if (retryMinutes < 1) {
+                            timeMessage = "a few seconds";
+                        } else if (retryMinutes < 60) {
+                            timeMessage = `${retryMinutes} minute${retryMinutes !== 1 ? 's' : ''}`;
+                        } else {
+                            const retryHours = Math.ceil(retryMinutes / 60);
+                            timeMessage = `${retryHours} hour${retryHours !== 1 ? 's' : ''}`;
+                        }
+
+                        // Show user-friendly error toast
+                        toast.error(
+                            `⏳ Rate limit reached!\n\nYou can process more images in ${timeMessage}.`,
+                            {
+                                autoClose: 8000,
+                                style: {
+                                    fontSize: '15px',
+                                    padding: '18px',
+                                    lineHeight: '1.6'
+                                }
+                            }
+                        );
+
+                    } else if (err instanceof Error) {
+                        toast.error(err.message || "Error during batch processing. Please try again");
+                    } else {
+                        // Handle unknown errors
+                        toast.error("An unexpected error occurred. Please try again");
+                    }
 
                 } finally {
                     setLoading(false);

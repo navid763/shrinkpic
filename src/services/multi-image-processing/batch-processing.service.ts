@@ -35,6 +35,21 @@ export interface BatchProcessingResults {
 }
 
 
+/**
+ * Custom error for server-side rate limiting
+ */
+export class RateLimitError extends Error {
+    constructor(
+        message: string,
+        public retryAfter?: number,  // seconds until retry
+        public limit?: number,        // max requests allowed
+        public remaining?: number     // requests remaining
+    ) {
+        super(message);
+        this.name = 'RateLimitError';
+    }
+}
+
 
 export class BatchProcessingService {
     // private static API_ENDPOINT = '/api/batch-compress';
@@ -73,6 +88,17 @@ export class BatchProcessingService {
                     formData,
                     onUploadProgress
                 );
+
+                // Check for rate limiting (429 status)
+                if (response.status === 429) {
+                    const data = await response.json();
+                    throw new RateLimitError(
+                        data.error || 'Rate limit exceeded. Please try again later.',
+                        data.retryAfter,
+                        data.limit,
+                        data.remaining
+                    );
+                }
 
                 if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
 

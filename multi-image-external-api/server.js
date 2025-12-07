@@ -2,9 +2,14 @@ import express from "express";
 import multer from "multer";
 import sharp from "sharp";
 import cors from "cors";
+import { memoryRateLimiter } from "./middleware/rate-limiter";
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Trust proxy to get correct IP addresses
+app.set('trust proxy', 1);
 
 // Enable CORS with specific origins
 app.use(cors({
@@ -36,13 +41,23 @@ app.get('/', (req, res) => {
         endpoints: {
             health: 'GET /',
             batchCompress: 'POST /batch-compress'
+        },
+        rateLimit: {
+            enabled: true,
+            max: 5,
+            window: '10 minutes'
         }
     });
 });
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+    res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        rateLimit: 'enabled'
+    });
 });
+
 
 // Helper to process each image
 async function processImage(file, options) {
@@ -115,9 +130,12 @@ async function processImage(file, options) {
     }
 }
 
+app.use('/batch-compress', memoryRateLimiter);
+
 // Batch compress API route
 app.post("/batch-compress", upload.array("images", 20), async (req, res) => {
     console.log('📥 Received batch-compress request');
+    console.log('Client IP:', req.ip);
     console.log('Files count:', req.files?.length || 0);
     console.log('Body:', req.body);
 
@@ -178,8 +196,9 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`⏱️  Rate Limiting: 5 requests per 10 minutes per IP`);
     console.log(`🔗 Available routes:`);
     console.log(`   GET  / (health check)`);
     console.log(`   GET  /health`);
-    console.log(`   POST /batch-compress`);
+    console.log(`   POST /batch-compress (rate limited)`);
 });
