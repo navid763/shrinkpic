@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import sharp from "sharp";
 import cors from "cors";
-import { memoryRateLimiter } from "./middleware/rate-limiter";
+import { memoryRateLimiter } from "./middleware/rate-limiter.js";
 
 
 const app = express();
